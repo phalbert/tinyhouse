@@ -1,26 +1,13 @@
-import express from 'express'
-import bodyParser from 'body-parser'
+import express from "express";
+import { ApolloServer } from "apollo-server-express";
+import { typeDefs, resolvers } from './graphql'
 
-import { listings } from './listings'
+const app = express();
+const port = 9000;
 
-const app = express()
-const port = 9000
+const server = new ApolloServer({ typeDefs, resolvers });
+server.applyMiddleware({ app, path: "/api" });
 
-app.use(bodyParser.json())
+app.listen(port);
 
-
-app.get('/', (_req, res) => res.send('hello'))
-
-app.get('/listings', (req, res) => {
-    return res.send(listings)
-})
-
-app.post('/listings/delete', (req, res) => {
-    const id: string = req.body.id
-    const filteredItems = listings.filter(item => item.id !== id)
-    return res.send(filteredItems)
-})
-
-app.listen(port)
-
-console.log(`App running on port ${port}`)
+console.log(`[app] : http://localhost:${port}`);
